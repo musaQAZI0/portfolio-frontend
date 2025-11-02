@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://portfolio-backend-cl6s.onrender.com;">
+    <title>Admin Panel - Musa Aamir Qazi Portfolio</title>
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <header class="admin-header">
+            <h1>Musa Aamir Qazi - Portfolio Admin Panel</h1>
+            <div class="header-actions">
+                <span id="userEmail" style="margin-right: 20px; opacity: 0.9;"></span>
+                <button onclick="logout()" class="btn-logout" style="padding: 10px 25px; background: rgba(255,255,255,0.2); color: white; border: 2px solid white; border-radius: 25px; cursor: pointer; font-weight: 500;">Logout</button>
+                <a href="/" class="btn-back">← Back to Portfolio</a>
+            </div>
+        </header>
+
+        <div class="admin-content">
+            <!-- Add Project Form -->
+            <section class="admin-section">
+                <h2>Add New Project</h2>
+                <form id="projectForm" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="title">Project Title *</label>
+                        <input type="text" id="title" name="title" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="technology">Technology *</label>
+                        <select id="technology" name="technology" required>
+                            <option value="">Select Technology</option>
+                            <option value="react-native">React Native</option>
+                            <option value="flutter">Flutter</option>
+                            <option value="java">Java</option>
+                            <option value="kotlin">Kotlin</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description *</label>
+                        <textarea id="description" name="description" rows="4" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="features">Key Features (one per line)</label>
+                        <textarea id="features" name="features" rows="6" placeholder="Feature 1&#10;Feature 2&#10;Feature 3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="images">Project Images (max 10)</label>
+                        <input type="file" id="images" name="images" multiple accept="image/*">
+                        <small>First image will be the primary image. Max 5MB per image.</small>
+                    </div>
+
+                    <div id="imagePreview" class="image-preview"></div>
+
+                    <div class="form-group">
+                        <label for="video_link">Video Demo Link (YouTube/Vimeo)</label>
+                        <input type="url" id="video_link" name="video_link" placeholder="https://youtube.com/watch?v=...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="github_link">GitHub Repository</label>
+                        <input type="url" id="github_link" name="github_link" placeholder="https://github.com/...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="playstore_link">Play Store Link</label>
+                        <input type="url" id="playstore_link" name="playstore_link" placeholder="https://play.google.com/store/apps/details?id=...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="appstore_link">App Store Link</label>
+                        <input type="url" id="appstore_link" name="appstore_link" placeholder="https://apps.apple.com/...">
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Add Project</button>
+                        <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Existing Projects -->
+            <section class="admin-section">
+                <h2>Manage Projects</h2>
+                
+                <div class="filter-tabs">
+                    <button class="filter-btn active" data-tech="all">All Projects</button>
+                    <button class="filter-btn" data-tech="react-native">React Native</button>
+                    <button class="filter-btn" data-tech="flutter">Flutter</button>
+                    <button class="filter-btn" data-tech="java">Java</button>
+                    <button class="filter-btn" data-tech="kotlin">Kotlin</button>
+                </div>
+
+                <div id="projectsList" class="projects-list">
+                    <div class="loading">Loading projects...</div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Edit Project</h2>
+            <form id="editProjectForm" enctype="multipart/form-data">
+                <input type="hidden" id="edit_project_id" name="project_id">
+                
+                <div class="form-group">
+                    <label for="edit_title">Project Title *</label>
+                    <input type="text" id="edit_title" name="title" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit_technology">Technology *</label>
+                    <select id="edit_technology" name="technology" required>
+                        <option value="react-native">React Native</option>
+                        <option value="flutter">Flutter</option>
+                        <option value="java">Java</option>
+                        <option value="kotlin">Kotlin</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit_description">Description *</label>
+                    <textarea id="edit_description" name="description" rows="4" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit_features">Key Features</label>
+                    <textarea id="edit_features" name="features" rows="6"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Current Images</label>
+                    <div id="currentImages" class="current-images"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit_images">Add New Images</label>
+                    <input type="file" id="edit_images" name="images" multiple accept="image/*">
+                </div>
+
+                <div class="form-group">
+                    <label for="edit_video_link">Video Demo Link</label>
+                    <input type="url" id="edit_video_link" name="video_link">
+                </div>
+
+                <div class="form-group">
+                    <label for="edit_github_link">GitHub Repository</label>
+                    <input type="url" id="edit_github_link" name="github_link">
+                </div>
+
+                <div class="form-group">
+                    <label for="edit_playstore_link">Play Store Link</label>
+                    <input type="url" id="edit_playstore_link" name="playstore_link">
+                </div>
+
+                <div class="form-group">
+                    <label for="edit_appstore_link">App Store Link</label>
+                    <input type="url" id="edit_appstore_link" name="appstore_link">
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Update Project</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script src="/js/config.js"></script>
+    <script src="/js/admin.js"></script>
+</body>
+</html>
