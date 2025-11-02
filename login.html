@@ -195,12 +195,18 @@
         console.log('API_URL:', API_URL);
 
         // Check if already logged in
+        const token = localStorage.getItem('authToken');
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
         fetch(`${API_URL}/auth/status`, {
             method: 'GET',
             credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json'
-            }
+            headers: headers
         })
         .then(response => {
             console.log('Auth status response:', response.status);
@@ -253,13 +259,16 @@
                 console.log('Login response data:', data);
 
                 if (data.success) {
-                    console.log('Login successful! Session ID:', data.sessionId);
-                    console.log('Redirecting to admin panel...');
-                    
-                    // Add a small delay to ensure session is saved
-                    setTimeout(() => {
-                        window.location.href = '/admin.html';
-                    }, 500);
+                    console.log('Login successful!');
+
+                    // Store JWT token in localStorage
+                    if (data.token) {
+                        localStorage.setItem('authToken', data.token);
+                        console.log('Token stored in localStorage');
+                    }
+
+                    // Redirect to admin panel
+                    window.location.href = '/admin.html';
                 } else {
                     // Show error
                     console.error('Login failed:', data.error);

@@ -4,6 +4,28 @@
 // Current filter
 let currentFilter = 'all';
 
+// Helper function to get auth headers with JWT token
+function getAuthHeaders() {
+    const token = localStorage.getItem('authToken');
+    const headers = {
+        'Content-Type': 'application/json'
+    };
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+    return headers;
+}
+
+// Helper function to get just authorization header (for FormData)
+function getAuthHeadersForFormData() {
+    const token = localStorage.getItem('authToken');
+    const headers = {};
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+    return headers;
+}
+
 // Check authentication on page load
 document.addEventListener('DOMContentLoaded', function() {
     checkAuth();
@@ -16,9 +38,7 @@ async function checkAuth() {
         const response = await fetch(`${API_URL}/auth/status`, {
             method: 'GET',
             credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json'
-            }
+            headers: getAuthHeaders()
         });
         
         console.log('Auth response status:', response.status);
@@ -54,17 +74,22 @@ async function checkAuth() {
 // Logout function
 async function logout() {
     try {
+        // Clear JWT token from localStorage
+        localStorage.removeItem('authToken');
+        console.log('Token removed from localStorage');
+
         const response = await fetch(`${API_URL}/logout`, {
             method: 'POST',
-            credentials: 'include'
+            credentials: 'include',
+            headers: getAuthHeaders()
         });
-        
-        if (response.ok) {
-            window.location.href = '/login.html';
-        }
+
+        // Redirect to login regardless of response
+        window.location.href = '/login.html';
     } catch (error) {
         console.error('Logout error:', error);
-        showNotification('Error logging out', 'error');
+        // Still redirect even if error
+        window.location.href = '/login.html';
     }
 }
 
@@ -95,6 +120,7 @@ async function handleProjectSubmit(e) {
         const response = await fetch(`${API_URL}/projects`, {
             method: 'POST',
             credentials: 'include',
+            headers: getAuthHeadersForFormData(),
             body: formData
         });
         
@@ -125,6 +151,7 @@ async function handleProjectUpdate(e) {
         const response = await fetch(`${API_URL}/projects/${projectId}`, {
             method: 'PUT',
             credentials: 'include',
+            headers: getAuthHeadersForFormData(),
             body: formData
         });
         
@@ -264,7 +291,8 @@ async function deleteProject(projectId) {
     try {
         const response = await fetch(`${API_URL}/projects/${projectId}`, {
             method: 'DELETE',
-            credentials: 'include'
+            credentials: 'include',
+            headers: getAuthHeaders()
         });
         
         const result = await response.json();
@@ -290,7 +318,8 @@ async function deleteImage(imageId) {
     try {
         const response = await fetch(`${API_URL}/images/${imageId}`, {
             method: 'DELETE',
-            credentials: 'include'
+            credentials: 'include',
+            headers: getAuthHeaders()
         });
         
         const result = await response.json();
