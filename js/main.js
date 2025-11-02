@@ -211,7 +211,7 @@ function setupStickyNav() {
 function getTechIcon(technology) {
     const icons = {
         'react-native': '⚛️',
-        'flutter': '🦋',
+        'flutter': '<img src="https://cdn.simpleicons.org/flutter/02569B" alt="Flutter" style="width: 1em; height: 1em; vertical-align: middle;" />',
         'java': '☕',
         'kotlin': '🚀'
     };
