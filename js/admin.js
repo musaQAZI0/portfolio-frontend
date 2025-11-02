@@ -432,7 +432,7 @@ window.onclick = function(event) {
 function getTechIcon(technology) {
     const icons = {
         'react-native': '⚛️',
-        'flutter': '🎯',
+        'flutter': '🦋',
         'java': '☕',
         'kotlin': '🚀'
     };
