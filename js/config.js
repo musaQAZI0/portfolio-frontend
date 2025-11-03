@@ -8,10 +8,10 @@ const API_CONFIG = {
         BASE_URL: 'http://localhost:3000'
     },
 
-    // For production (uses Netlify proxy to backend)
+    // For production (uses Netlify proxy for API, direct Render URL for images)
     production: {
         API_URL: '/api',
-        BASE_URL: ''
+        BASE_URL: 'https://portfolio-backend-cl6s.onrender.com'
     }
 };
 
