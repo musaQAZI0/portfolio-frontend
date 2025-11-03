@@ -231,8 +231,8 @@ function createProjectItem(project) {
                 </div>
             </div>
             <div class="project-actions">
-                <button class="btn-edit" data-project-id="${project.id}">Edit</button>
-                <button class="btn-delete" data-project-id="${project.id}">Delete</button>
+                <button class="btn-edit" data-project-id="${project._id}">Edit</button>
+                <button class="btn-delete" data-project-id="${project._id}">Delete</button>
             </div>
         </div>
     `;
@@ -247,7 +247,7 @@ async function openEditModal(projectId) {
         const project = await response.json();
         
         // Fill form
-        document.getElementById('edit_project_id').value = project.id;
+        document.getElementById('edit_project_id').value = project._id;
         document.getElementById('edit_title').value = project.title;
         document.getElementById('edit_technology').value = project.technology;
         document.getElementById('edit_description').value = project.description;

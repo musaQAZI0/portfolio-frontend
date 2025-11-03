@@ -56,7 +56,7 @@ function createProjectCard(project) {
     const tags = [project.technology.toUpperCase()];
     
     return `
-        <div class="project-card" data-project-id="${project.id}">
+        <div class="project-card" data-project-id="${project._id}">
             <div class="project-image-container">
                 ${imageHTML}
             </div>
